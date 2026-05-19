@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Burnout Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Student Burnout Predictor</h1>
+      <p class="subtitle">Input fitur mahasiswa lalu dapatkan prediksi burnout.</p>
+
+      <form action="/predict" method="post" class="grid">
+        <div class="field">
+          <label for="daily_study_hours">Daily Study Hours</label>
+          <input id="daily_study_hours" name="daily_study_hours" type="number" step="0.1" required />
+        </div>
+        <div class="field">
+          <label for="daily_sleep_hours">Daily Sleep Hours</label>
+          <input id="daily_sleep_hours" name="daily_sleep_hours" type="number" step="0.1" required />
+        </div>
+        <div class="field">
+          <label for="screen_time_hours">Screen Time Hours</label>
+          <input id="screen_time_hours" name="screen_time_hours" type="number" step="0.1" required />
+        </div>
+        <div class="field">
+          <label for="physical_activity_hours">Physical Activity Hours</label>
+          <input id="physical_activity_hours" name="physical_activity_hours" type="number" step="0.1" required />
+        </div>
+        <div class="field">
+          <label for="stress_level">Stress Level</label>
+          <select id="stress_level" name="stress_level" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="anxiety_score">Anxiety Score</label>
+          <input id="anxiety_score" name="anxiety_score" type="number" step="1" required />
+        </div>
+        <div class="field">
+          <label for="depression_score">Depression Score</label>
+          <input id="depression_score" name="depression_score" type="number" step="1" required />
+        </div>
+        <div class="field">
+          <label for="academic_pressure_score">Academic Pressure Score</label>
+          <input id="academic_pressure_score" name="academic_pressure_score" type="number" step="1" required />
+        </div>
+        <div class="field">
+          <label for="financial_stress_score">Financial Stress Score</label>
+          <input id="financial_stress_score" name="financial_stress_score" type="number" step="1" required />
+        </div>
+        <div class="field">
+          <label for="social_support_score">Social Support Score</label>
+          <input id="social_support_score" name="social_support_score" type="number" step="1" required />
+        </div>
+        <div class="field">
+          <label for="sleep_quality">Sleep Quality</label>
+          <select id="sleep_quality" name="sleep_quality" required>
+            <option value="Poor">Poor</option>
+            <option value="Average">Average</option>
+            <option value="Good">Good</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="attendance_percentage">Attendance %</label>
+          <input id="attendance_percentage" name="attendance_percentage" type="number" step="0.1" required />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Predict</button>
+        </div>
+      </form>
+    </section>
+
+    {% if result %}
+    <section class="card result">
+      <h2>Prediction</h2>
+      <div class="badge">{{ result }}</div>
+      {% if recommendation %}
+      <p class="recommendation">{{ recommendation }}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>
