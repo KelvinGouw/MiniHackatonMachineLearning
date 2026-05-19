@@ -2,6 +2,7 @@ import os
 import joblib
 import pandas as pd
 from flask import Flask, jsonify, request
+import train_model
 
 MODEL_PATH = os.path.join("models", "burnout_model.joblib")
 
@@ -9,11 +10,9 @@ app = Flask(__name__)
 
 
 def load_model():
-    if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError(
-            "Model not found. Run train_model.py first to create models/burnout_model.joblib"
-        )
-    return joblib.load(MODEL_PATH)
+    if os.path.exists(MODEL_PATH):
+        return joblib.load(MODEL_PATH)
+    return train_model.train_and_save()
 
 
 model_bundle = load_model()

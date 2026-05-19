@@ -59,7 +59,7 @@ def build_pipeline(categorical_cols, numeric_cols, model):
     return pipeline
 
 
-def main():
+def train_and_save():
     df = pd.read_csv(DATA_PATH)
     df = df.drop_duplicates()
 
@@ -101,22 +101,26 @@ def main():
             best_pipeline = pipeline
             best_name = name
 
+    bundle = {
+        "model": best_pipeline,
+        "model_name": best_name,
+        "features": feature_cols,
+        "categorical_cols": categorical_cols,
+        "numeric_cols": numeric_cols,
+        "accuracy": best_acc,
+    }
+
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    joblib.dump(
-        {
-            "model": best_pipeline,
-            "model_name": best_name,
-            "features": feature_cols,
-            "categorical_cols": categorical_cols,
-            "numeric_cols": numeric_cols,
-            "accuracy": best_acc,
-        },
-        MODEL_PATH,
-    )
+    joblib.dump(bundle, MODEL_PATH)
 
     print(f"Saved model to {MODEL_PATH}")
     print(f"Best model: {best_name}")
     print(f"Test accuracy: {best_acc:.4f}")
+    return bundle
+
+
+def main():
+    train_and_save()
 
 
 if __name__ == "__main__":
