@@ -2,7 +2,7 @@ import os
 import requests
 import streamlit as st
 
-MODEL_API_URL = os.getenv("https://minihackatonclass-kelnin/predict", "http://localhost:5001/predict")
+MODEL_API_URL = os.getenv("MODEL_API_URL", "http://localhost:5001/predict")
 
 FEATURES = [
     "daily_study_hours",
