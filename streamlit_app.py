@@ -38,14 +38,6 @@ def get_recommendation(label):
     return "Jaga pola tidur dan aktivitas seimbang, serta cari dukungan sosial saat diperlukan."
 
 
-def to_binary_label(pred, proba):
-    if not proba:
-        return "High" if pred == "High" else "Low"
-    high_score = proba.get("High", 0) + proba.get("Medium", 0)
-    low_score = proba.get("Low", 0)
-    return "High" if high_score >= low_score else "Low"
-
-
 def build_payload(values):
     payload = {}
     for feature in FEATURES:
@@ -102,10 +94,14 @@ if submitted:
         response.raise_for_status()
         data = response.json()
         pred = data.get("pred")
-        proba = data.get("proba", {})
-        result = to_binary_label(pred, proba)
         st.subheader("Prediction")
-        st.success(result)
-        st.write(get_recommendation(result))
+        st.success(pred)
+        st.write(get_recommendation(pred))
+        proba = data.get("proba", {})
+        if proba:
+            st.caption(
+                "Probability: "
+                + ", ".join(f"{label}={score:.3f}" for label, score in sorted(proba.items()))
+            )
     except requests.RequestException as exc:
         st.error(f"Gagal memanggil model service: {exc}")
