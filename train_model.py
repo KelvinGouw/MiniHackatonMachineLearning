@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
 
 DATA_PATH = os.path.join("dataset", "student_mental_health_burnout.csv")
 MODEL_PATH = os.path.join("models", "burnout_model.joblib")
@@ -77,29 +77,18 @@ def train_and_save():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    candidates = {
-        "random_forest": RandomForestClassifier(
-            n_estimators=500,
-            min_samples_leaf=2,
-            class_weight="balanced",
-            random_state=42,
-        ),
-        "gradient_boosting": GradientBoostingClassifier(random_state=42),
-    }
+    model = LogisticRegression(
+        max_iter=2000,
+        class_weight="balanced",
+        solver="lbfgs",
+        random_state=42,
+    )
 
-    best_name = None
-    best_pipeline = None
-    best_acc = -1
-
-    for name, model in candidates.items():
-        pipeline = build_pipeline(categorical_cols, numeric_cols, model)
-        pipeline.fit(X_train, y_train)
-        preds = pipeline.predict(X_test)
-        acc = accuracy_score(y_test, preds)
-        if acc > best_acc:
-            best_acc = acc
-            best_pipeline = pipeline
-            best_name = name
+    best_name = "logistic_regression"
+    best_pipeline = build_pipeline(categorical_cols, numeric_cols, model)
+    best_pipeline.fit(X_train, y_train)
+    preds = best_pipeline.predict(X_test)
+    best_acc = accuracy_score(y_test, preds)
 
     bundle = {
         "model": best_pipeline,
@@ -111,7 +100,7 @@ def train_and_save():
     }
 
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    joblib.dump(bundle, MODEL_PATH)
+    joblib.dump(bundle, MODEL_PATH, compress=("gzip", 3))
 
     print(f"Saved model to {MODEL_PATH}")
     print(f"Best model: {best_name}")

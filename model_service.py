@@ -4,9 +4,15 @@ import pandas as pd
 from flask import Flask, jsonify, request
 import train_model
 
-MODEL_PATH = os.path.join("models", "burnout_model.joblib")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "burnout_model.joblib")
 
 app = Flask(__name__)
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"})
 
 
 def load_model():
@@ -51,4 +57,5 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    port = int(os.getenv("PORT", "5001"))
+    app.run(host="0.0.0.0", port=port, debug=False)
